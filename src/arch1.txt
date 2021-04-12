@@ -2,5 +2,5 @@ ID	Nombre			Carrera	Ciudad Origen	Fecha grad
 10290	Cristina Vargas	LRI	Morelia	16/06/2024
 12912	Abril Mejia	IIS	Toluca	11/06/2023
 14280	Ariana Rivera	ARQ	Guadalajara	13/06/2022
-14836	Andrea Garcia	LAF	Monterrey	16/06/2024
+14836	Andrea Garcia	LRI Monterrey	16/06/2024
 16133	Abigail Soto	LRI	Monterrey	15/12/2024

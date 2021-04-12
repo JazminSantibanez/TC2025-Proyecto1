@@ -48,8 +48,7 @@ void numAlumT(int numAlum, FILE *salida){
     fprintf(salida, "%d\n", numAlum);
 }
 
-void numAlum1(Alumno *arrAl, int size, char *carr, FILE *salida)
-{
+void numAlum1(Alumno *arrAl, int size, char *carr, FILE *salida){
     int contador = 0;
     for (int i = 0; i < size; i++){
         if( strcmp(arrAl[i].sCarrera, carr) == 0)
@@ -58,14 +57,35 @@ void numAlum1(Alumno *arrAl, int size, char *carr, FILE *salida)
     fprintf(salida, "%d\n", contador);
 }
 
-void numAlum2(Alumno *arrAl, int size, char *carr ,char *cd, FILE *salida)
-{
+void numAlum2(Alumno *arrAl, int size, char *carr ,char *cd, FILE *salida){
     int contador = 0;
     for (int i = 0; i < size; i++){
         if( (strcmp(arrAl[i].sCarrera, carr) == 0) && (strcmp(arrAl[i].sCiudad, cd) == 0) )
             contador++;
     }
     fprintf(salida, "%d\n", contador);
+}
+
+void nombAlumT(Alumno *arrAl, int size, FILE *salida){
+    for (int i = 0; i < size; i++){
+        fprintf(salida, "%s\n", arrAl[i].sName);
+    }
+}
+
+void nombAlum1(Alumno *arrAl, int size, char *carr, FILE *salida){
+    for(int i = 0; i < size; i++){
+        if ( strcmp(arrAl[i].sCarrera, carr) == 0){
+            fprintf(salida, "%s\n", arrAl[i].sName);
+        }
+    }
+}
+
+void nombAlum2(Alumno *arrAl, int size, char *carr, char *cd, FILE *salida){
+    for(int i = 0; i < size; i++){
+        if( (strcmp(arrAl[i].sCarrera, carr) == 0) && (strcmp(arrAl[i].sCiudad, cd) == 0) ){
+            fprintf(salida, "%s\n", arrAl[i].sName);
+        }
+    }
 }
 
 int main(int argc, char *argv[])
@@ -147,12 +167,13 @@ int main(int argc, char *argv[])
     fechaGrad(arrAl, numAlum, idUs, outF); 
     */
     char str[4], str2[25];
+    nombAlumT(arrAl, numAlum, outF);
     printf("Carrera: ");
     scanf("%s", str);
-    numAlum1(arrAl, numAlum, str, outF);
+    nombAlum1(arrAl, numAlum, str, outF);
     printf("Ciudad: ");
     scanf("%s", str2);
-    numAlum2(arrAl, numAlum, str, str2, outF);
+    nombAlum2(arrAl, numAlum, str, str2, outF);
 
     /* Liberar memoria dinamica */
     free(arrAl);
