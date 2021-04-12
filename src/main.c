@@ -20,6 +20,30 @@ typedef struct Grades
     float mD;
 } Grades;
 
+/* Queries para pasar a biblioteca */
+void kardex(Grades *arrCalif, int size, int id, FILE *salida){
+    for (int i = 0; i < size; i++){
+        if (arrCalif[i].id == id)
+        {
+            fprintf(salida, " -- Alumno: %d --\n", arrCalif[i].id);
+            fprintf(salida, "Materia 1: %.2f", arrCalif[i].mA);
+            fprintf(salida, "Materia 2: %.2f", arrCalif[i].mB);
+            fprintf(salida, "Materia 3: %.2f", arrCalif[i].mC);
+            fprintf(salida, "Materia 4: %.2f", arrCalif[i].mD);
+            return;
+        }
+    }
+}
+
+void fechaGrad(Alumno *arrAl, int size, int id, FILE *salida){
+    for (int i = 0; i < size; i++){
+        if (arrAl[i].id == id){
+            fprintf(salida, "Alumno: %d \t Fecha estimada de graduación: %s\n", arrAl[i].id, arrAl[i].sFecha);
+            return;
+        }
+    }
+}
+
 
 
 int main(int argc, char *argv[])
