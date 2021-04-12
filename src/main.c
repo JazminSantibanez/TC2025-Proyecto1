@@ -26,10 +26,10 @@ void kardex(Grades *arrCalif, int size, int id, FILE *salida){
         if (arrCalif[i].id == id)
         {
             fprintf(salida, " -- Alumno: %d --\n", arrCalif[i].id);
-            fprintf(salida, "Materia 1: %.2f", arrCalif[i].mA);
-            fprintf(salida, "Materia 2: %.2f", arrCalif[i].mB);
-            fprintf(salida, "Materia 3: %.2f", arrCalif[i].mC);
-            fprintf(salida, "Materia 4: %.2f", arrCalif[i].mD);
+            fprintf(salida, "Materia 1: %.2f\n", arrCalif[i].mA);
+            fprintf(salida, "Materia 2: %.2f\n", arrCalif[i].mB);
+            fprintf(salida, "Materia 3: %.2f\n", arrCalif[i].mC);
+            fprintf(salida, "Materia 4: %.2f\n", arrCalif[i].mD);
             return;
         }
     }
@@ -113,6 +113,14 @@ int main(int argc, char *argv[])
     {
         printf("%d %f %f %f %f\n", arrCalif[i].id, arrCalif[i].mA, arrCalif[i].mB, arrCalif[i].mC, arrCalif[i].mD);
     }  */
+    
+    //// Pruebas manuales /////
+    FILE *outF;
+    outF = stdout;
+    int idUs = 0;
+    scanf("%d", &idUs);
+    kardex(arrCalif, numCalif, idUs, outF);
+    fechaGrad(arrAl, numAlum, idUs, outF);
 
     /* Liberar memoria dinamica */
     free(arrAl);
