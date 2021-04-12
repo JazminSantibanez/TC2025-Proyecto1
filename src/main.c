@@ -88,6 +88,61 @@ void nombAlum2(Alumno *arrAl, int size, char *carr, char *cd, FILE *salida){
     }
 }
 
+char* getName(Alumno *arrAl, int size, int id){
+    for (int i = 0; i < size; i++){
+         if (arrAl[i].id == id)
+        {
+            return arrAl[i].sName;
+        }
+    }
+}
+
+void nombAlumOp(Grades *arrCalif, Alumno *arrAl, int size, char *op, float target, FILE *salida){
+    int opc = 0;
+    if (strcmp(op,"<") == 0)
+        opc = 1;
+    else if (strcmp(op,">") == 0)
+        opc = 2;
+    else if (strcmp(op,"==") == 0)
+        opc = 3;
+    else if (strcmp(op,"!=") == 0)
+        opc = 4;
+
+    for(int i= 0; i < size; i++){
+        switch (opc)
+        {
+        case 1:
+            if ( ((arrCalif[i].mA + arrCalif[i].mB + arrCalif[i].mC + arrCalif[i].mD) / 4.0) < target ){
+                fprintf(salida, "%s\n", getName(arrAl, size, arrCalif[i].id));
+            }
+            break;
+        case 2:
+            if ( ((arrCalif[i].mA + arrCalif[i].mB + arrCalif[i].mC + arrCalif[i].mD) / 4.0) > target ){
+                fprintf(salida, "%s\n", getName(arrAl, size, arrCalif[i].id));
+            }
+            break;
+        
+        case 3:
+            if ( ((arrCalif[i].mA + arrCalif[i].mB + arrCalif[i].mC + arrCalif[i].mD) / 4.0) == target ){
+                fprintf(salida, "%s\n", getName(arrAl, size, arrCalif[i].id));
+            }
+            break;
+        
+        case 4:
+            if ( ((arrCalif[i].mA + arrCalif[i].mB + arrCalif[i].mC + arrCalif[i].mD) / 4.0) != target ){
+                fprintf(salida, "%s\n", getName(arrAl, size, arrCalif[i].id));
+            }
+            break; 
+
+        default:
+            fprintf(salida, " !!! Error: El operador ingresado no es valido !!!\n");
+            return;
+        }
+    }
+}
+
+
+
 int main(int argc, char *argv[])
 {
     FILE *archAlumnos, *archCalif;
@@ -139,7 +194,7 @@ int main(int argc, char *argv[])
         }
     }
     else {
-        printf(" !!! Error: El numero de alumnos en ambos archivos no coincide !!! ");
+        printf(" !!! Error: El numero de alumnos en ambos archivos no coincide !!!\n");
     }
     fclose(archCalif);
 
@@ -165,7 +220,7 @@ int main(int argc, char *argv[])
     scanf("%d", &idUs);
     kardex(arrCalif, numCalif, idUs, outF);
     fechaGrad(arrAl, numAlum, idUs, outF); 
-    */
+    
     char str[4], str2[25];
     nombAlumT(arrAl, numAlum, outF);
     printf("Carrera: ");
@@ -174,6 +229,14 @@ int main(int argc, char *argv[])
     printf("Ciudad: ");
     scanf("%s", str2);
     nombAlum2(arrAl, numAlum, str, str2, outF);
+    */
+    char str[4];
+    float prom = 0.0;
+    printf("Operador: ");
+    scanf("%s", str);
+    printf("Promedio: ");
+    scanf("%f", &prom);
+    nombAlumOp(arrCalif, arrAl, numAlum, str, prom, outF);
 
     /* Liberar memoria dinamica */
     free(arrAl);
