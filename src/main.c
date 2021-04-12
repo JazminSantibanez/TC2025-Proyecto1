@@ -20,6 +20,127 @@ typedef struct Grades
     float mD;
 } Grades;
 
+/* Queries para pasar a biblioteca */
+void kardex(Grades *arrCalif, int size, int id, FILE *salida){
+    for (int i = 0; i < size; i++){
+        if (arrCalif[i].id == id)
+        {
+            fprintf(salida, " -- Alumno: %d --\n", arrCalif[i].id);
+            fprintf(salida, "Materia 1: %.2f\n", arrCalif[i].mA);
+            fprintf(salida, "Materia 2: %.2f\n", arrCalif[i].mB);
+            fprintf(salida, "Materia 3: %.2f\n", arrCalif[i].mC);
+            fprintf(salida, "Materia 4: %.2f\n", arrCalif[i].mD);
+            return;
+        }
+    }
+}
+
+void fechaGrad(Alumno *arrAl, int size, int id, FILE *salida){
+    for (int i = 0; i < size; i++){
+        if (arrAl[i].id == id){
+            fprintf(salida, "Alumno: %d \t Fecha estimada de graduación: %s\n", arrAl[i].id, arrAl[i].sFecha);
+            return;
+        }
+    }
+}
+
+void numAlumT(int numAlum, FILE *salida){
+    fprintf(salida, "%d\n", numAlum);
+}
+
+void numAlum1(Alumno *arrAl, int size, char *carr, FILE *salida){
+    int contador = 0;
+    for (int i = 0; i < size; i++){
+        if( strcmp(arrAl[i].sCarrera, carr) == 0)
+            contador++;
+    }
+    fprintf(salida, "%d\n", contador);
+}
+
+void numAlum2(Alumno *arrAl, int size, char *carr ,char *cd, FILE *salida){
+    int contador = 0;
+    for (int i = 0; i < size; i++){
+        if( (strcmp(arrAl[i].sCarrera, carr) == 0) && (strcmp(arrAl[i].sCiudad, cd) == 0) )
+            contador++;
+    }
+    fprintf(salida, "%d\n", contador);
+}
+
+void nombAlumT(Alumno *arrAl, int size, FILE *salida){
+    for (int i = 0; i < size; i++){
+        fprintf(salida, "%s\n", arrAl[i].sName);
+    }
+}
+
+void nombAlum1(Alumno *arrAl, int size, char *carr, FILE *salida){
+    for(int i = 0; i < size; i++){
+        if ( strcmp(arrAl[i].sCarrera, carr) == 0){
+            fprintf(salida, "%s\n", arrAl[i].sName);
+        }
+    }
+}
+
+void nombAlum2(Alumno *arrAl, int size, char *carr, char *cd, FILE *salida){
+    for(int i = 0; i < size; i++){
+        if( (strcmp(arrAl[i].sCarrera, carr) == 0) && (strcmp(arrAl[i].sCiudad, cd) == 0) ){
+            fprintf(salida, "%s\n", arrAl[i].sName);
+        }
+    }
+}
+
+char* getName(Alumno *arrAl, int size, int id){
+    for (int i = 0; i < size; i++){
+         if (arrAl[i].id == id)
+        {
+            return arrAl[i].sName;
+        }
+    }
+}
+
+void nombAlumOp(Grades *arrCalif, Alumno *arrAl, int size, char *op, float target, FILE *salida){
+    int opc = 0;
+    if (strcmp(op,"<") == 0)
+        opc = 1;
+    else if (strcmp(op,">") == 0)
+        opc = 2;
+    else if (strcmp(op,"==") == 0)
+        opc = 3;
+    else if (strcmp(op,"!=") == 0)
+        opc = 4;
+
+    for(int i= 0; i < size; i++){
+        switch (opc)
+        {
+        case 1:
+            if ( ((arrCalif[i].mA + arrCalif[i].mB + arrCalif[i].mC + arrCalif[i].mD) / 4.0) < target ){
+                fprintf(salida, "%s\n", getName(arrAl, size, arrCalif[i].id));
+            }
+            break;
+        case 2:
+            if ( ((arrCalif[i].mA + arrCalif[i].mB + arrCalif[i].mC + arrCalif[i].mD) / 4.0) > target ){
+                fprintf(salida, "%s\n", getName(arrAl, size, arrCalif[i].id));
+            }
+            break;
+        
+        case 3:
+            if ( ((arrCalif[i].mA + arrCalif[i].mB + arrCalif[i].mC + arrCalif[i].mD) / 4.0) == target ){
+                fprintf(salida, "%s\n", getName(arrAl, size, arrCalif[i].id));
+            }
+            break;
+        
+        case 4:
+            if ( ((arrCalif[i].mA + arrCalif[i].mB + arrCalif[i].mC + arrCalif[i].mD) / 4.0) != target ){
+                fprintf(salida, "%s\n", getName(arrAl, size, arrCalif[i].id));
+            }
+            break; 
+
+        default:
+            fprintf(salida, " !!! Error: El operador ingresado no es valido !!!\n");
+            return;
+        }
+    }
+}
+
 
 
 int main(int argc, char *argv[])
@@ -73,7 +194,7 @@ int main(int argc, char *argv[])
         }
     }
     else {
-        printf(" !!! Error: El numero de alumnos en ambos archivos no coincide !!! ");
+        printf(" !!! Error: El numero de alumnos en ambos archivos no coincide !!!\n");
     }
     fclose(archCalif);
 
@@ -89,6 +210,33 @@ int main(int argc, char *argv[])
     {
         printf("%d %f %f %f %f\n", arrCalif[i].id, arrCalif[i].mA, arrCalif[i].mB, arrCalif[i].mC, arrCalif[i].mD);
     }  */
+
+    //// Pruebas manuales /////
+    FILE *outF;
+    outF = stdout;
+    
+    /*
+    int idUs = 0;
+    scanf("%d", &idUs);
+    kardex(arrCalif, numCalif, idUs, outF);
+    fechaGrad(arrAl, numAlum, idUs, outF); 
+    
+    char str[4], str2[25];
+    nombAlumT(arrAl, numAlum, outF);
+    printf("Carrera: ");
+    scanf("%s", str);
+    nombAlum1(arrAl, numAlum, str, outF);
+    printf("Ciudad: ");
+    scanf("%s", str2);
+    nombAlum2(arrAl, numAlum, str, str2, outF);
+    */
+    char str[4];
+    float prom = 0.0;
+    printf("Operador: ");
+    scanf("%s", str);
+    printf("Promedio: ");
+    scanf("%f", &prom);
+    nombAlumOp(arrCalif, arrAl, numAlum, str, prom, outF);
 
     /* Liberar memoria dinamica */
     free(arrAl);
