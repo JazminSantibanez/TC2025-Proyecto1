@@ -1,10 +1,14 @@
 # Prerequisites
 *.d
+.vscode
+.vs
 
 # Object files
 *.ko
 *.obj
 *.elf
+*.o
+*.so
 
 # Precompiled Headers
 *.gch
