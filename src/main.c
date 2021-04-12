@@ -95,6 +95,18 @@ char* getName(Alumno *arrAl, int size, int id){
             return arrAl[i].sName;
         }
     }
+    return NULL;
+}
+
+int getIndexCalif(Grades *arrCalif, int size, int id)
+{
+    for (int i = 0; i < size; i++){
+         if (arrCalif[i].id == id)
+        {
+            return i;
+        }
+    }
+    return -1;
 }
 
 void nombAlumOp(Grades *arrCalif, Alumno *arrAl, int size, char *op, float target, FILE *salida){
@@ -197,22 +209,43 @@ int main(int argc, char *argv[])
         printf(" !!! Error: El numero de alumnos en ambos archivos no coincide !!!\n");
     }
     fclose(archCalif);
+    
+    /* Logica principal del programa */
+    FILE *outF;
+    int iOpc = 1; 
+    do {
+        printf("\n ---- Menu ---- \n");
+        printf("1 - Mostrar estudiantes \n2 - Hacer consulta \n0 - Terminar el programa\n");
+        printf("Que opción le gustaria ejecutar?: ");
+        scanf("%d", &iOpc);
 
-    /* Print de datos */
-    /* printf("--------\n");
-    for (int i = 0; i < numAlum; i++)
-    {
-        //printf(">%d %lu %lu %lu %lu\n", arrAl[i].id, strlen(arrAl[i].sName), strlen(arrAl[i].sCarrera), strlen(arrAl[i].sCiudad), strlen(arrAl[i].sFecha));
-        printf(">%d %s %s %s %s\n", arrAl[i].id, arrAl[i].sName, arrAl[i].sCarrera, arrAl[i].sCiudad, arrAl[i].sFecha);
-    } 
-    printf("\n--------\n");
-    for (int i = 0; i < numAlum; i++)
-    {
-        printf("%d %f %f %f %f\n", arrCalif[i].id, arrCalif[i].mA, arrCalif[i].mB, arrCalif[i].mC, arrCalif[i].mD);
-    }  */
+        switch (iOpc)
+        {
+        case 1:
+            printf("  ID \t  Nombre \tCarrera \t Ciudad \t Graduacion \t Calificaciones\n");
+            for (int i = 0; i < numAlum; i++){
+                printf(" %d) %d  -  %s\t%s   %s     \t%s", i+1, arrAl[i].id, arrAl[i].sName, arrAl[i].sCarrera, arrAl[i].sCiudad, arrAl[i].sFecha);
+                ind = getIndexCalif(arrCalif, numCalif, arrAl[i].id);
+                printf("\t Notas: - %.1f %.1f %.1f %.1f\n", arrCalif[ind].mA, arrCalif[ind].mB, arrCalif[ind].mC, arrCalif[ind].mD);
+            }
+            break;
+        
+        case 2:
+            
+            break;
+        
+        case 0:
+
+            break;
+        
+        default:
+            printf(" !!! Opcioón no reconocida. Ingresa uno de los numeros del menu !!!\n");
+            break;
+        }
+    } while (iOpc != -0);
 
     //// Pruebas manuales /////
-    FILE *outF;
+    
     outF = stdout;
     
     /*
@@ -229,7 +262,7 @@ int main(int argc, char *argv[])
     printf("Ciudad: ");
     scanf("%s", str2);
     nombAlum2(arrAl, numAlum, str, str2, outF);
-    */
+    
     char str[4];
     float prom = 0.0;
     printf("Operador: ");
@@ -237,6 +270,7 @@ int main(int argc, char *argv[])
     printf("Promedio: ");
     scanf("%f", &prom);
     nombAlumOp(arrCalif, arrAl, numAlum, str, prom, outF);
+    */
 
     /* Liberar memoria dinamica */
     free(arrAl);
