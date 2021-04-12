@@ -20,6 +20,28 @@ typedef struct Grades
     float mD;
 } Grades;
 
+/* Funciones auxiliares*/
+char* getName(Alumno *arrAl, int size, int id){
+    for (int i = 0; i < size; i++){
+         if (arrAl[i].id == id)
+        {
+            return arrAl[i].sName;
+        }
+    }
+    return NULL;
+}
+
+int getIndexCalif(Grades *arrCalif, int size, int id)
+{
+    for (int i = 0; i < size; i++){
+         if (arrCalif[i].id == id)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
 /* Queries para pasar a biblioteca */
 void kardex(Grades *arrCalif, int size, int id, FILE *salida){
     for (int i = 0; i < size; i++){
@@ -88,27 +110,6 @@ void nombAlum2(Alumno *arrAl, int size, char *carr, char *cd, FILE *salida){
     }
 }
 
-char* getName(Alumno *arrAl, int size, int id){
-    for (int i = 0; i < size; i++){
-         if (arrAl[i].id == id)
-        {
-            return arrAl[i].sName;
-        }
-    }
-    return NULL;
-}
-
-int getIndexCalif(Grades *arrCalif, int size, int id)
-{
-    for (int i = 0; i < size; i++){
-         if (arrCalif[i].id == id)
-        {
-            return i;
-        }
-    }
-    return -1;
-}
-
 void nombAlumOp(Grades *arrCalif, Alumno *arrAl, int size, char *op, float target, FILE *salida){
     int opc = 0;
     if (strcmp(op,"<") == 0)
@@ -152,8 +153,6 @@ void nombAlumOp(Grades *arrCalif, Alumno *arrAl, int size, char *op, float targe
         }
     }
 }
-
-
 
 int main(int argc, char *argv[])
 {
@@ -212,8 +211,10 @@ int main(int argc, char *argv[])
     
     /* Logica principal del programa */
     FILE *outF;
+    char qry[3];
     int iOpc = 1; 
     do {
+        iOpc = -1;
         printf("\n ---- Menu ---- \n");
         printf("1 - Mostrar estudiantes \n2 - Hacer consulta \n0 - Terminar el programa\n");
         printf("Que opción le gustaria ejecutar?: ");
@@ -231,8 +232,29 @@ int main(int argc, char *argv[])
             break;
         
         case 2:
-            
-            break;
+            {
+                char temp[15];
+                do {
+                    char cOpc;
+                    char str[100];
+                    char *qry[3];
+                    int arg = 0;
+                    printf(" Query >");
+                    scanf(" %[^\n]", str);
+                    //	printf("%s", str);
+
+                    qry[0] = strtok(str, " \r\n\t");
+                    qry[1] = strtok(NULL, " \n");
+                    qry[2] = strtok(NULL, " \n");
+
+                    printf("\tQuiere leer otro query? (y/n): ");
+                    scanf(" %c", &cOpc);
+
+                    if (cOpc == 'n')
+                        break;
+                } while (1);
+                break;
+            }
         
         case 0:
 
