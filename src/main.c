@@ -233,26 +233,31 @@ int main(int argc, char *argv[])
         
         case 2:
             {
-                char temp[15];
-                do {
-                    char cOpc;
-                    char str[100];
+            printf(" ** Da enter sin escribir nada para salir **\n");
+               while (1)
+                {
+                    char str[35];
+                    str[0] = '\0';
                     char *qry[3];
                     int arg = 0;
-                    printf(" Query >");
-                    scanf(" %[^\n]", str);
-                    //	printf("%s", str);
+                    getchar();
 
-                    qry[0] = strtok(str, " \r\n\t");
-                    qry[1] = strtok(NULL, " \n");
-                    qry[2] = strtok(NULL, " \n");
-
-                    printf("\tQuiere leer otro query? (y/n): ");
-                    scanf(" %c", &cOpc);
-
-                    if (cOpc == 'n')
+                    printf(" Query > ");
+                    scanf("%[^\n]", str);
+                    
+                    
+                    qry[0] = strtok(str, " ");
+                    qry[1] = strtok(NULL, " ");
+                    qry[2] = strtok(NULL, " ");
+                    
+                    if (qry[0] == NULL)
+                    {
+                        printf("Nada\n");
                         break;
-                } while (1);
+                    }
+
+                    //printf("%s-%s-%s\n", qry[0], qry[1], qry[2]);
+                }
                 break;
             }
         
