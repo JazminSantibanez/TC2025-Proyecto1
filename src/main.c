@@ -44,7 +44,29 @@ void fechaGrad(Alumno *arrAl, int size, int id, FILE *salida){
     }
 }
 
+void numAlumT(int numAlum, FILE *salida){
+    fprintf(salida, "%d\n", numAlum);
+}
 
+void numAlum1(Alumno *arrAl, int size, char *carr, FILE *salida)
+{
+    int contador = 0;
+    for (int i = 0; i < size; i++){
+        if( strcmp(arrAl[i].sCarrera, carr) == 0)
+            contador++;
+    }
+    fprintf(salida, "%d\n", contador);
+}
+
+void numAlum2(Alumno *arrAl, int size, char *carr ,char *cd, FILE *salida)
+{
+    int contador = 0;
+    for (int i = 0; i < size; i++){
+        if( (strcmp(arrAl[i].sCarrera, carr) == 0) && (strcmp(arrAl[i].sCiudad, cd) == 0) )
+            contador++;
+    }
+    fprintf(salida, "%d\n", contador);
+}
 
 int main(int argc, char *argv[])
 {
@@ -113,14 +135,24 @@ int main(int argc, char *argv[])
     {
         printf("%d %f %f %f %f\n", arrCalif[i].id, arrCalif[i].mA, arrCalif[i].mB, arrCalif[i].mC, arrCalif[i].mD);
     }  */
-    
+
     //// Pruebas manuales /////
     FILE *outF;
     outF = stdout;
+    
+    /*
     int idUs = 0;
     scanf("%d", &idUs);
     kardex(arrCalif, numCalif, idUs, outF);
-    fechaGrad(arrAl, numAlum, idUs, outF);
+    fechaGrad(arrAl, numAlum, idUs, outF); 
+    */
+    char str[4], str2[25];
+    printf("Carrera: ");
+    scanf("%s", str);
+    numAlum1(arrAl, numAlum, str, outF);
+    printf("Ciudad: ");
+    scanf("%s", str2);
+    numAlum2(arrAl, numAlum, str, str2, outF);
 
     /* Liberar memoria dinamica */
     free(arrAl);
