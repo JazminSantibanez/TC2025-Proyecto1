@@ -22,7 +22,7 @@
 #include <string.h>
 #include <getopt.h>
 
-#include "../lib/src/queries.h"
+#include "../lib/src/headers.h"
 
 int main(int argc, char *argv[])
 {
@@ -33,6 +33,21 @@ int main(int argc, char *argv[])
     FILE *archAlumnos, *archCalif, *outF;
     arch1 = argv[1];
     arch2 = argv[2];
+
+    archAlumnos = fopen(arch1, "r");
+    archCalif = fopen(arch2, "r");
+
+     if (argc < 3)
+    {
+        printf("\n !!! Error: El programa debe recibir como parametro 2 archivos !!! \n");
+        return 0;
+    }
+
+    if ( archAlumnos == NULL || archCalif == NULL )
+    {
+        printf("\n !!! Error: Los archivos de entrada no pudieron ser abiertos. Revisa su sintaxis. !!! \n");
+        return 0;
+    }
 
     while ((opt = getopt(argc, argv, "hvo:")) != -1) { 
         switch(opt) {
@@ -59,10 +74,12 @@ int main(int argc, char *argv[])
         outF = stdout;
     }
 
+   
+
     /* Inicializacion de archivos*/
     if (bVerbose == 1)
         fprintf(outF, " ~ Abriendo archivo1\n");
-    archAlumnos = fopen(arch1, "r");
+   
     char line[100];
     int numAlum = -1, ind = 0, numCalif = -1;
     Alumno *arrAl;
@@ -94,7 +111,7 @@ int main(int argc, char *argv[])
     /* Contar numero de alumnos en arch2 */
     if (bVerbose == 1)
         fprintf(outF, " ~ Abriendo archivo2 \n");
-    archCalif = fopen(arch2, "r");
+    
     while (!feof(archCalif))
     {
         fgets(line, 100, archCalif);
