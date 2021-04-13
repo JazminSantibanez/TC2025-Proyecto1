@@ -243,12 +243,16 @@ int main(int argc, char *argv[])
     }
 
     /* Inicializacion de archivos*/
+    if (bVerbose == 1)
+        fprintf(outF, " ~ Abriendo archivo1\n");
     archAlumnos = fopen(arch1, "r");
     char line[100];
     int numAlum = -1, ind = 0, numCalif = -1;
     Alumno *arrAl;
     Grades *arrCalif;
 
+    if (bVerbose == 1)
+        fprintf(outF, " ~ Contando numero de alumnos\n");
     /* Contar numero de alumnos en arch1 */
     while (!feof(archAlumnos))
     {
@@ -259,6 +263,8 @@ int main(int argc, char *argv[])
     arrAl = malloc(numAlum * sizeof(Alumno));
     
     /* Guardar informacion de alumnos */
+    if (bVerbose == 1)
+        fprintf(outF, " ~ Guardando datos de alumnos de archivo1\n");
     fgets(line, 100, archAlumnos); //Ignorar headers
     while (ind < numAlum)
     {	
@@ -269,6 +275,8 @@ int main(int argc, char *argv[])
     fclose(archAlumnos);
 
     /* Contar numero de alumnos en arch2 */
+    if (bVerbose == 1)
+        fprintf(outF, " ~ Abriendo archivo2 \n");
     archCalif = fopen(arch2, "r");
     while (!feof(archCalif))
     {
@@ -279,6 +287,8 @@ int main(int argc, char *argv[])
     arrCalif = malloc(numCalif * sizeof(Grades));
     
     /* Guardar informacion de calificaciones */
+    if (bVerbose == 1)
+        fprintf(outF, " ~ Guardando calificaciones de archivo2 \n");
     if ( numAlum == numCalif) /* Guardar informacion */
     {
         ind = 0;
@@ -292,11 +302,13 @@ int main(int argc, char *argv[])
     }
     else {
         printf(" !!! Error: El numero de alumnos en ambos archivos no coincide !!!\n");
+        return 0;
     }
     fclose(archCalif);
     
     /* Logica principal del programa */
-    
+    if (bVerbose == 1)
+        fprintf(outF, " ~ Abriendo menu principal\n");
     int iOpc;
     do {
         iOpc = -1;
@@ -307,6 +319,8 @@ int main(int argc, char *argv[])
 
         switch (iOpc){
         case 1:{
+            if (bVerbose == 1)
+                fprintf(outF, " ~ Mostrando toda la informacion de todos los alumnos \n");
             fprintf(outF, "  ID \t  Nombre \tCarrera \t Ciudad \t Graduacion \t Calificaciones\n");
             for (int i = 0; i < numAlum; i++){
                 fprintf(outF," %d) %d  -  %s\t%s   %s     \t%s", i+1, arrAl[i].id, arrAl[i].sName, arrAl[i].sCarrera, arrAl[i].sCiudad, arrAl[i].sFecha);
@@ -331,11 +345,13 @@ int main(int argc, char *argv[])
                     printf("\n Query >");
                     scanf("%[^\n]", str);
 
-                    if (bOutput == 1)
+                    if (bOutput == 1 && str != NULL)
                     {
                         fprintf(outF, " Query >%s\n", str);
                     }
                     
+                    if (bVerbose == 1)
+                        fprintf(outF, " ~ Separando query en substrings \n");
                     qry[0] = strtok(str, " \n");
                     qry[1] = strtok(NULL, " \n");
                     qry[2] = strtok(NULL, " \n");
@@ -357,6 +373,8 @@ int main(int argc, char *argv[])
                     }
 
                     if (bFlag == 1) {
+                        if (bVerbose == 1)
+                            fprintf(outF, " ~ Ejecutando query \n");
                         //Llamar a menu
                         int iMenu = -1;
                         iMenu = menuQuery(qry, arg);
@@ -423,15 +441,13 @@ int main(int argc, char *argv[])
         default:{
             printf(" !!! Error: Opción no reconocida. Ingresa uno de los numeros del menu !!!\n");
             break;
-        }
+            }
         }
     } while (iOpc != -0);
 
-    //// Pruebas manuales /////
-    
-    
-
     /* Liberar memoria dinamica */
+    if (bVerbose == 1)
+        fprintf(outF, " ~ Liberando memoria dinamica\n");
     free(arrAl);
     free(arrCalif);
     
