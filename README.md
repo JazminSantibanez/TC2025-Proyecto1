@@ -1,4 +1,4 @@
-# Tarea3_A01234029
+# P1_A01234029
 Proyecto 1 Programación avanzada (Gpo 4). 
 Jazmín Yolistli Santibáñez de la Rosa A01234029
 
