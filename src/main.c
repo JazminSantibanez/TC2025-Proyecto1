@@ -20,12 +20,35 @@ typedef struct Grades
     float mD;
 } Grades;
 
+/* Funciones auxiliares*/
+char* getName(Alumno *arrAl, int size, int id){
+    for (int i = 0; i < size; i++){
+         if (arrAl[i].id == id)
+        {
+            return arrAl[i].sName;
+        }
+    }
+    return NULL;
+}
+
+int getIndexCalif(Grades *arrCalif, int size, int id)
+{
+    for (int i = 0; i < size; i++){
+         if (arrCalif[i].id == id)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+
 /* Queries para pasar a biblioteca */
-void kardex(Grades *arrCalif, int size, int id, FILE *salida){
+void kardex(Grades *arrCalif, Alumno *arrAl, int size, int id, FILE *salida){
     for (int i = 0; i < size; i++){
         if (arrCalif[i].id == id)
         {
-            fprintf(salida, " -- Alumno: %d --\n", arrCalif[i].id);
+            fprintf(salida, " -- Alumno: %d %s --\n", arrCalif[i].id, getName(arrAl, size, arrCalif[i].id) );
             fprintf(salida, "Materia 1: %.2f\n", arrCalif[i].mA);
             fprintf(salida, "Materia 2: %.2f\n", arrCalif[i].mB);
             fprintf(salida, "Materia 3: %.2f\n", arrCalif[i].mC);
@@ -33,6 +56,7 @@ void kardex(Grades *arrCalif, int size, int id, FILE *salida){
             return;
         }
     }
+    printf(" -- El alumno %d no se encuentra en los datos -- \n", id);
 }
 
 void fechaGrad(Alumno *arrAl, int size, int id, FILE *salida){
@@ -42,6 +66,7 @@ void fechaGrad(Alumno *arrAl, int size, int id, FILE *salida){
             return;
         }
     }
+    printf(" -- El alumno %d no se encuentra en los datos -- \n", id);
 }
 
 void numAlumT(int numAlum, FILE *salida){
@@ -84,15 +109,6 @@ void nombAlum2(Alumno *arrAl, int size, char *carr, char *cd, FILE *salida){
     for(int i = 0; i < size; i++){
         if( (strcmp(arrAl[i].sCarrera, carr) == 0) && (strcmp(arrAl[i].sCiudad, cd) == 0) ){
             fprintf(salida, "%s\n", arrAl[i].sName);
-        }
-    }
-}
-
-char* getName(Alumno *arrAl, int size, int id){
-    for (int i = 0; i < size; i++){
-         if (arrAl[i].id == id)
-        {
-            return arrAl[i].sName;
         }
     }
 }
@@ -141,7 +157,35 @@ void nombAlumOp(Grades *arrCalif, Alumno *arrAl, int size, char *op, float targe
     }
 }
 
+int menuQuery(char *qry[3], int numArg){
+    if ( (strcmp(*(qry + 0), "Kardex") == 0 ) && (numArg == 2) ){
+        return 1;
+    }
+    if ( (strcmp(*(qry + 0), "Fecha_estimada_graduacion") == 0 ) && (numArg == 2) ){
+        return 2;
+    }
+    if ( (strcmp(*(qry + 0), "Numero_alumnos") == 0 ) ){
+        if (numArg == 3)
+            return 3;
+        else if ( strcmp(*(qry + 1),"*") == 0 )
+            return 4;
+        else if (numArg == 2)
+            return 5;
+    }
+    if ( (strcmp(*(qry + 0), "Nombre_alumnos") == 0 ) ){
+        if ((strcmp(*(qry + 1), "<") == 0 ) || (strcmp(*(qry + 1), ">") == 0 ) || (strcmp(*(qry + 1), "==") == 0 ) || (strcmp(*(qry + 1), "!=") == 0 ) )
+            return 6; 
+        else if (numArg == 3)
+            return 7;
+        else if ( strcmp(*(qry + 1),"*") == 0 )
+            return 8;
+        else if (numArg == 2)
+            return 9;
+    }
 
+
+    return -1;
+}
 
 int main(int argc, char *argv[])
 {
@@ -197,46 +241,136 @@ int main(int argc, char *argv[])
         printf(" !!! Error: El numero de alumnos en ambos archivos no coincide !!!\n");
     }
     fclose(archCalif);
-
-    /* Print de datos */
-    /* printf("--------\n");
-    for (int i = 0; i < numAlum; i++)
-    {
-        //printf(">%d %lu %lu %lu %lu\n", arrAl[i].id, strlen(arrAl[i].sName), strlen(arrAl[i].sCarrera), strlen(arrAl[i].sCiudad), strlen(arrAl[i].sFecha));
-        printf(">%d %s %s %s %s\n", arrAl[i].id, arrAl[i].sName, arrAl[i].sCarrera, arrAl[i].sCiudad, arrAl[i].sFecha);
-    } 
-    printf("\n--------\n");
-    for (int i = 0; i < numAlum; i++)
-    {
-        printf("%d %f %f %f %f\n", arrCalif[i].id, arrCalif[i].mA, arrCalif[i].mB, arrCalif[i].mC, arrCalif[i].mD);
-    }  */
-
-    //// Pruebas manuales /////
+    
+    /* Logica principal del programa */
     FILE *outF;
     outF = stdout;
+    int iOpc;
+    do {
+        iOpc = -1;
+        printf("\n ---- Menu ---- \n");
+        printf("1 - Mostrar estudiantes \n2 - Hacer consulta \n0 - Terminar el programa\n");
+        printf("Que opción le gustaria ejecutar?: ");
+        scanf("%d", &iOpc);
+
+        switch (iOpc){
+        case 1:{
+            printf("  ID \t  Nombre \tCarrera \t Ciudad \t Graduacion \t Calificaciones\n");
+            for (int i = 0; i < numAlum; i++){
+                printf(" %d) %d  -  %s\t%s   %s     \t%s", i+1, arrAl[i].id, arrAl[i].sName, arrAl[i].sCarrera, arrAl[i].sCiudad, arrAl[i].sFecha);
+                ind = getIndexCalif(arrCalif, numCalif, arrAl[i].id);
+                printf("\t Notas: - %.1f %.1f %.1f %.1f\n", arrCalif[ind].mA, arrCalif[ind].mB, arrCalif[ind].mC, arrCalif[ind].mD);
+            }
+            break;
+        }
+        
+        case 2:{
+            printf(" ** Da enter sin escribir nada para salir **\n");
+               while (1){
+                    char str[35];
+                    str[0] = '\0';
+                    char *qry[3];
+                    int arg = 0, bFlag = 0;
+                    getchar();
+
+                    printf("\n Query >");
+                    scanf("%[^\n]", str);
+                    
+                    
+                    qry[0] = strtok(str, " \n");
+                    qry[1] = strtok(NULL, " \n");
+                    qry[2] = strtok(NULL, " \n");
+
+                    if (qry[0] == NULL){
+                        break;
+                    }
+                    else if ( qry[2] != NULL){
+                        arg = 3;
+                        bFlag = 1;
+                    }
+                    else if (qry[1] == NULL ){
+                        printf(" !!! Error: Query inválido. Revisa la documentación si necesitas ayuda !!! \n");
+                        bFlag = 0;
+                    }
+                    else if (qry[2] == NULL){
+                        arg = 2;
+                        bFlag = 1;
+                    }
+
+                    if (bFlag == 1) {
+                        //Llamar a menu
+                        int iMenu = -1;
+                        iMenu = menuQuery(qry, arg);
+                        switch(iMenu){
+                            case 1: //Caso Kardex
+                            {
+                                kardex(arrCalif, arrAl, numCalif, atoi(qry[1]), outF); 
+                                break;
+                            }
+                            case 2: //Caso fecha de Graduacion
+                            {
+                                fechaGrad(arrAl, numAlum, atoi(qry[1]), outF);
+                                break;
+                            }
+                            case 3: //Numero de alumnos. Filtro: Carrera y ciudad
+                            {
+                                numAlum2(arrAl, numAlum, qry[1], qry[2], outF);
+                                break;
+                            }
+                            case 4: //Numero de alumnos en total.
+                            {
+                                numAlumT(numAlum, outF);
+                                break;
+                            }
+                            case 5:  //Numero de alumnos. Filtro: Carrera 
+                            {
+                                numAlum1(arrAl, numAlum, qry[1], outF);
+                                break;
+                            }
+                            case 6: //Nombre de alumnos con operador
+                            {
+                                nombAlumOp(arrCalif, arrAl, numAlum, qry[1], atof(qry[2]), outF);
+                                break;
+                            }
+                            case 7: //Nombre de alumno.  Filtro: Carrera y ciudad
+                            {
+                                nombAlum2(arrAl, numAlum, qry[1], qry[2], outF);
+                                break; 
+                            }
+                            case 8: //Nombre de todos los alumnos
+                            {
+                                nombAlumT(arrAl, numAlum, outF);
+                                break;
+                            }
+                            case 9: //Nombre de los alumnos. Filtro: Carrera
+                            {
+                                nombAlum1(arrAl, numAlum, qry[1], outF);
+                                break;
+                            }
+
+                            default:
+                                printf(" !!! Error: Query inválido. Revisa la documentación si necesitas ayuda !!! \n");
+                        }
+                    }
+
+                }
+                break;
+            }
+        
+        case 0:
+            break;
+        
+        default:{
+            printf(" !!! Error: Opción no reconocida. Ingresa uno de los numeros del menu !!!\n");
+            break;
+        }
+        }
+    } while (iOpc != -0);
+
+    //// Pruebas manuales /////
     
-    /*
-    int idUs = 0;
-    scanf("%d", &idUs);
-    kardex(arrCalif, numCalif, idUs, outF);
-    fechaGrad(arrAl, numAlum, idUs, outF); 
+    outF = stdout;
     
-    char str[4], str2[25];
-    nombAlumT(arrAl, numAlum, outF);
-    printf("Carrera: ");
-    scanf("%s", str);
-    nombAlum1(arrAl, numAlum, str, outF);
-    printf("Ciudad: ");
-    scanf("%s", str2);
-    nombAlum2(arrAl, numAlum, str, str2, outF);
-    */
-    char str[4];
-    float prom = 0.0;
-    printf("Operador: ");
-    scanf("%s", str);
-    printf("Promedio: ");
-    scanf("%f", &prom);
-    nombAlumOp(arrCalif, arrAl, numAlum, str, prom, outF);
 
     /* Liberar memoria dinamica */
     free(arrAl);
