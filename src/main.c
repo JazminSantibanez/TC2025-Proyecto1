@@ -218,6 +218,7 @@ int main(int argc, char *argv[])
     
     /* Logica principal del programa */
     FILE *outF;
+    outF = stdout;
     int iOpc;
     do {
         iOpc = -1;
@@ -277,11 +278,8 @@ int main(int argc, char *argv[])
                         switch(iMenu){
                             case 1:
                             {
-                                /* printf("%d\n", atoi(qry[1]));
-                                kardex(arrCalif, numCalif, 10290, outF); */
-                                int idUs = 0;
-                                scanf("%d", &idUs);
-                                kardex(arrCalif, numCalif, idUs, outF);
+                                //printf("%d\n", atoi(qry[1]));
+                                kardex(arrCalif, numCalif, atoi(qry[1]), outF); 
                                 break;
                             }
                         }
