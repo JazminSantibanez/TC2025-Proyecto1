@@ -1,0 +1,23 @@
+ -- Alumno: 10290 Cristina Vargas --
+Materia 1: 72.00
+Materia 2: 58.00
+Materia 3: 75.00
+Materia 4: 66.00
+  ID 	  Nombre 	Carrera 	 Ciudad 	 Graduacion 	 Calificaciones
+ 1) 10290  -  Cristina Vargas	LRI   Morelia     	16/06/2024	 Notas: - 72.0 58.0 75.0 66.0
+ 2) 12912  -  Abril Mejia	IIS   Toluca     	11/06/2023	 Notas: - 90.0 99.0 89.0 84.0
+ 3) 14280  -  Ariana Rivera	ARQ   Guadalajara     	13/06/2022	 Notas: - 70.0 73.0 65.0 60.0
+ 4) 14836  -  Andrea Garcia	LRI   Monterrey     	16/06/2024	 Notas: - 61.0 59.0 72.0 68.0
+ 5) 16133  -  Abigail Soto	LRI   Monterrey     	15/12/2024	 Notas: - 88.0 89.0 70.0 87.0
+  ID 	  Nombre 	Carrera 	 Ciudad 	 Graduacion 	 Calificaciones
+ 1) 10290  -  Cristina Vargas	LRI   Morelia     	16/06/2024	 Notas: - 72.0 58.0 75.0 66.0
+ 2) 12912  -  Abril Mejia	IIS   Toluca     	11/06/2023	 Notas: - 90.0 99.0 89.0 84.0
+ 3) 14280  -  Ariana Rivera	ARQ   Guadalajara     	13/06/2022	 Notas: - 70.0 73.0 65.0 60.0
+ 4) 14836  -  Andrea Garcia	LRI   Monterrey     	16/06/2024	 Notas: - 61.0 59.0 72.0 68.0
+ 5) 16133  -  Abigail Soto	LRI   Monterrey     	15/12/2024	 Notas: - 88.0 89.0 70.0 87.0
+Cristina Vargas
+Abril Mejia
+Ariana Rivera
+Andrea Garcia
+Abigail Soto
+Alumno: 16133 	 Fecha estimada de graduación: 15/12/2024

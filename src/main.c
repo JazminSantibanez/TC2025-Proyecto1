@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <getopt.h>
 
 typedef struct Alumno
 {
@@ -209,14 +210,46 @@ int menuQuery(char *qry[3], int numArg){
 
 int main(int argc, char *argv[])
 {
-    FILE *archAlumnos, *archCalif;
+    /* Opciones */
+    int opt;
+    int bVerbose = 0, bOutput = 0; //Bandera de verbose y output
+    char *outName, *arch1, *arch2;
+    FILE *archAlumnos, *archCalif, *outF;
+    arch1 = argv[1];
+    arch2 = argv[2];
+
+    while ((opt = getopt(argc, argv, "hvo:")) != -1) { 
+        switch(opt) {
+            case 'h':
+                printf("elp\n");
+                return 1;
+            case 'o':
+                outName = optarg;
+                bOutput = 1;
+                break;
+            case 'v':
+                bVerbose = 1;
+                break;
+            default:
+                break;
+        }
+    }
+
+    if (bOutput == 1)
+    {
+        outF = fopen(outName, "w");
+    } else {
+        outF = stdout;
+    }
+
+    /* Inicializacion de archivos*/
+    archAlumnos = fopen(arch1, "r");
     char line[100];
     int numAlum = -1, ind = 0, numCalif = -1;
     Alumno *arrAl;
     Grades *arrCalif;
 
     /* Contar numero de alumnos en arch1 */
-    archAlumnos = fopen(argv[1], "r");
     while (!feof(archAlumnos))
     {
         fgets(line, 100, archAlumnos);
@@ -224,7 +257,7 @@ int main(int argc, char *argv[])
     }
     rewind(archAlumnos);
     arrAl = malloc(numAlum * sizeof(Alumno));
-
+    
     /* Guardar informacion de alumnos */
     fgets(line, 100, archAlumnos); //Ignorar headers
     while (ind < numAlum)
@@ -236,7 +269,7 @@ int main(int argc, char *argv[])
     fclose(archAlumnos);
 
     /* Contar numero de alumnos en arch2 */
-    archCalif = fopen(argv[2], "r");
+    archCalif = fopen(arch2, "r");
     while (!feof(archCalif))
     {
         fgets(line, 100, archCalif);
@@ -263,8 +296,7 @@ int main(int argc, char *argv[])
     fclose(archCalif);
     
     /* Logica principal del programa */
-    FILE *outF;
-    outF = stdout;
+    
     int iOpc;
     do {
         iOpc = -1;
@@ -275,11 +307,11 @@ int main(int argc, char *argv[])
 
         switch (iOpc){
         case 1:{
-            printf("  ID \t  Nombre \tCarrera \t Ciudad \t Graduacion \t Calificaciones\n");
+            fprintf(outF, "  ID \t  Nombre \tCarrera \t Ciudad \t Graduacion \t Calificaciones\n");
             for (int i = 0; i < numAlum; i++){
-                printf(" %d) %d  -  %s\t%s   %s     \t%s", i+1, arrAl[i].id, arrAl[i].sName, arrAl[i].sCarrera, arrAl[i].sCiudad, arrAl[i].sFecha);
+                fprintf(outF," %d) %d  -  %s\t%s   %s     \t%s", i+1, arrAl[i].id, arrAl[i].sName, arrAl[i].sCarrera, arrAl[i].sCiudad, arrAl[i].sFecha);
                 ind = getIndexCalif(arrCalif, numCalif, arrAl[i].id);
-                printf("\t Notas: - %.1f %.1f %.1f %.1f\n", arrCalif[ind].mA, arrCalif[ind].mB, arrCalif[ind].mC, arrCalif[ind].mD);
+                fprintf(outF,"\t Notas: - %.1f %.1f %.1f %.1f\n", arrCalif[ind].mA, arrCalif[ind].mB, arrCalif[ind].mC, arrCalif[ind].mD);
             }
             break;
         }
@@ -389,7 +421,6 @@ int main(int argc, char *argv[])
 
     //// Pruebas manuales /////
     
-    outF = stdout;
     
 
     /* Liberar memoria dinamica */
