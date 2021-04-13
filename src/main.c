@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <getopt.h>
 
 typedef struct Alumno
 {
@@ -62,6 +63,29 @@ int getIndexCalif(Grades *arrCalif, int size, int id)
     return -1;
 }
 
+void help(){
+    printf(" P1() \n\n");
+    printf(" NOMBRE \n");
+    printf(" \t p1 - Base de datos de una escuela. \n");
+    printf("\n DESCRIPCION \n");
+    printf(" \t Recibe dos archivos con informacion de los alumnos y sus calicaciones.\n");
+    printf(" \t Permite al usuario desplegar toda la informacion almacenada o consultar.\n");
+    printf(" \t cierta información a través de queries especificados.\n");
+    printf("\n OPCIONES \n");
+    printf(" \t -h \t\t Despliega toda la ayuda e información.\n");
+    printf(" \t -v \t\t Verbose - Muestra detalles adicionales de la ejecución del programa.\n");
+    printf(" \t -o <arg> \t Cambia el input a un archivo especificado. Requiere de un nombre de archivo despues de -o.\n");
+    printf("\n QUERIES \n");
+    printf(" \t Kardex <estudiante_id> \t\t\t Muestra las calificaciones de un alumno.\n");
+    printf(" \t Fecha_estimada_graduacion <estudiante_id> \t Muestra la fecha aprox. de graduacion de un alumno.\n");
+    printf(" \t Numero_alumnos <carrera> <ciudad_origen> \t Muestra el número de alumnos que hay en una carrera y ciudad dacos.\n");
+    printf(" \t Numero_alumnos <carrera> \t\t\t Muestra el número de alumnos en una carrera.\n");
+    printf(" \t Numero_alumnos * \t\t\t\t Muestra el número total de alumnos registrados.\n");
+    printf(" \t Nombre_alumnos <carrera> <ciudad_origen> \t Muestra el nombre de alumnos que hay en una carrera y ciudad dacos.\n");
+    printf(" \t Nombre_alumnos <carrera> \t\t\t Muestra el nombre de alumnos en una carrera.\n");
+    printf(" \t Nombre_alumnos * \t\t\t\t Muestra el nombre de todos los alumnos registrados\n");
+    printf(" \t Nombre_alumnos <operador> <numero> \t\t Muestra el nombre de los alumnos cuyo promedio cumple con la condicion nada.\n");
+}
 
 /* Queries para pasar a biblioteca */
 void kardex(Grades *arrCalif, Alumno *arrAl, int size, int id, FILE *salida){
@@ -207,16 +231,54 @@ int menuQuery(char *qry[3], int numArg){
     return -1;
 }
 
+
 int main(int argc, char *argv[])
 {
-    FILE *archAlumnos, *archCalif;
+    /* Opciones */
+    int opt;
+    int bVerbose = 0, bOutput = 0; //Bandera de verbose y output
+    char *outName, *arch1, *arch2;
+    FILE *archAlumnos, *archCalif, *outF;
+    arch1 = argv[1];
+    arch2 = argv[2];
+
+    while ((opt = getopt(argc, argv, "hvo:")) != -1) { 
+        switch(opt) {
+            case 'h':
+                help();
+                return 1;
+            case 'o':
+                outName = optarg;
+                bOutput = 1;
+                break;
+            case 'v':
+                bVerbose = 1;
+                break;
+            default:
+                break;
+        }
+    }
+
+    if (bOutput == 1)
+    {
+        outF = fopen(outName, "w");
+    } 
+    else {
+        outF = stdout;
+    }
+
+    /* Inicializacion de archivos*/
+    if (bVerbose == 1)
+        fprintf(outF, " ~ Abriendo archivo1\n");
+    archAlumnos = fopen(arch1, "r");
     char line[100];
     int numAlum = -1, ind = 0, numCalif = -1;
     Alumno *arrAl;
     Grades *arrCalif;
 
+    if (bVerbose == 1)
+        fprintf(outF, " ~ Contando numero de alumnos\n");
     /* Contar numero de alumnos en arch1 */
-    archAlumnos = fopen(argv[1], "r");
     while (!feof(archAlumnos))
     {
         fgets(line, 100, archAlumnos);
@@ -224,8 +286,10 @@ int main(int argc, char *argv[])
     }
     rewind(archAlumnos);
     arrAl = malloc(numAlum * sizeof(Alumno));
-
+    
     /* Guardar informacion de alumnos */
+    if (bVerbose == 1)
+        fprintf(outF, " ~ Guardando datos de alumnos de archivo1\n");
     fgets(line, 100, archAlumnos); //Ignorar headers
     while (ind < numAlum)
     {	
@@ -236,7 +300,9 @@ int main(int argc, char *argv[])
     fclose(archAlumnos);
 
     /* Contar numero de alumnos en arch2 */
-    archCalif = fopen(argv[2], "r");
+    if (bVerbose == 1)
+        fprintf(outF, " ~ Abriendo archivo2 \n");
+    archCalif = fopen(arch2, "r");
     while (!feof(archCalif))
     {
         fgets(line, 100, archCalif);
@@ -246,6 +312,8 @@ int main(int argc, char *argv[])
     arrCalif = malloc(numCalif * sizeof(Grades));
     
     /* Guardar informacion de calificaciones */
+    if (bVerbose == 1)
+        fprintf(outF, " ~ Guardando calificaciones de archivo2 \n");
     if ( numAlum == numCalif) /* Guardar informacion */
     {
         ind = 0;
@@ -259,12 +327,13 @@ int main(int argc, char *argv[])
     }
     else {
         printf(" !!! Error: El numero de alumnos en ambos archivos no coincide !!!\n");
+        return 0;
     }
     fclose(archCalif);
     
     /* Logica principal del programa */
-    FILE *outF;
-    outF = stdout;
+    if (bVerbose == 1)
+        fprintf(outF, " ~ Abriendo menu principal\n");
     int iOpc;
     do {
         iOpc = -1;
@@ -275,12 +344,17 @@ int main(int argc, char *argv[])
 
         switch (iOpc){
         case 1:{
-            printf("  ID \t  Nombre \tCarrera \t Ciudad \t Graduacion \t Calificaciones\n");
+            if (bVerbose == 1)
+                fprintf(outF, " ~ Mostrando toda la informacion de todos los alumnos \n");
+            fprintf(outF, "  ID \t  Nombre \tCarrera \t Ciudad \t Graduacion \t Calificaciones\n");
             for (int i = 0; i < numAlum; i++){
-                printf(" %d) %d  -  %s\t%s   %s     \t%s", i+1, arrAl[i].id, arrAl[i].sName, arrAl[i].sCarrera, arrAl[i].sCiudad, arrAl[i].sFecha);
+                fprintf(outF," %d) %d  -  %s\t%s   %s     \t%s", i+1, arrAl[i].id, arrAl[i].sName, arrAl[i].sCarrera, arrAl[i].sCiudad, arrAl[i].sFecha);
                 ind = getIndexCalif(arrCalif, numCalif, arrAl[i].id);
-                printf("\t Notas: - %.1f %.1f %.1f %.1f\n", arrCalif[ind].mA, arrCalif[ind].mB, arrCalif[ind].mC, arrCalif[ind].mD);
+                fprintf(outF,"\t Notas: - %.1f %.1f %.1f %.1f\n", arrCalif[ind].mA, arrCalif[ind].mB, arrCalif[ind].mC, arrCalif[ind].mD);
+                
             }
+            if (bOutput == 1)
+                fprintf(outF, "\n");
             break;
         }
         
@@ -295,8 +369,14 @@ int main(int argc, char *argv[])
 
                     printf("\n Query >");
                     scanf("%[^\n]", str);
+
+                    if (bOutput == 1 && str != NULL)
+                    {
+                        fprintf(outF, " Query >%s\n", str);
+                    }
                     
-                    
+                    if (bVerbose == 1)
+                        fprintf(outF, " ~ Separando query en substrings \n");
                     qry[0] = strtok(str, " \n");
                     qry[1] = strtok(NULL, " \n");
                     qry[2] = strtok(NULL, " \n");
@@ -318,6 +398,8 @@ int main(int argc, char *argv[])
                     }
 
                     if (bFlag == 1) {
+                        if (bVerbose == 1)
+                            fprintf(outF, " ~ Ejecutando query \n");
                         //Llamar a menu
                         int iMenu = -1;
                         iMenu = menuQuery(qry, arg);
@@ -372,8 +454,9 @@ int main(int argc, char *argv[])
                                 printf(" !!! Error: Query inválido. Revisa la documentación si necesitas ayuda !!! \n");
                         }
                     }
-
+                    fprintf(outF, "\n");
                 }
+                
                 break;
             }
         
@@ -383,16 +466,13 @@ int main(int argc, char *argv[])
         default:{
             printf(" !!! Error: Opción no reconocida. Ingresa uno de los numeros del menu !!!\n");
             break;
-        }
+            }
         }
     } while (iOpc != -0);
 
-    //// Pruebas manuales /////
-    
-    outF = stdout;
-    
-
     /* Liberar memoria dinamica */
+    if (bVerbose == 1)
+        fprintf(outF, " ~ Liberando memoria dinamica\n");
     free(arrAl);
     free(arrCalif);
     
