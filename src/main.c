@@ -1,3 +1,23 @@
+/*
+ * @autor Jazmin Santibañez
+ * 
+ * Este material esta bajo una Licencia Creative Commons 
+ * Atribución-NoComercial-SinDerivadas 4.0 Internacional
+ *  (CC BY-NC-ND 4.0)
+ * 
+ * Este programa funciona como base de datos
+ * de una escuela y recibe como parametro dos archivos.
+ *      - arch1.txt - Informacion general de los alumnos
+ *      - arch2.txt - Calificaciones de los alumnos en 4 materias.
+ * 
+ * Cuenta con un menu donde se pueden realizar 2 actividades.
+ * 1) Mostrar toda la informacion de todos los alumnos.
+ * 2) Permitir ingresar queries por el usuario.
+
+ * 
+*/
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
