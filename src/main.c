@@ -312,7 +312,10 @@ int main(int argc, char *argv[])
                 fprintf(outF," %d) %d  -  %s\t%s   %s     \t%s", i+1, arrAl[i].id, arrAl[i].sName, arrAl[i].sCarrera, arrAl[i].sCiudad, arrAl[i].sFecha);
                 ind = getIndexCalif(arrCalif, numCalif, arrAl[i].id);
                 fprintf(outF,"\t Notas: - %.1f %.1f %.1f %.1f\n", arrCalif[ind].mA, arrCalif[ind].mB, arrCalif[ind].mC, arrCalif[ind].mD);
+                
             }
+            if (bOutput == 1)
+                fprintf(outF, "\n");
             break;
         }
         
@@ -327,7 +330,11 @@ int main(int argc, char *argv[])
 
                     printf("\n Query >");
                     scanf("%[^\n]", str);
-                    
+
+                    if (bOutput == 1)
+                    {
+                        fprintf(outF, " Query >%s\n", str);
+                    }
                     
                     qry[0] = strtok(str, " \n");
                     qry[1] = strtok(NULL, " \n");
@@ -404,8 +411,9 @@ int main(int argc, char *argv[])
                                 printf(" !!! Error: Query inválido. Revisa la documentación si necesitas ayuda !!! \n");
                         }
                     }
-
+                    fprintf(outF, "\n");
                 }
+                
                 break;
             }
         
