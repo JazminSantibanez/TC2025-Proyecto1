@@ -44,11 +44,11 @@ int getIndexCalif(Grades *arrCalif, int size, int id)
 
 
 /* Queries para pasar a biblioteca */
-void kardex(Grades *arrCalif, int size, int id, FILE *salida){
+void kardex(Grades *arrCalif, Alumno *arrAl, int size, int id, FILE *salida){
     for (int i = 0; i < size; i++){
         if (arrCalif[i].id == id)
         {
-            fprintf(salida, " -- Alumno: %d --\n", arrCalif[i].id);
+            fprintf(salida, " -- Alumno: %d %s --\n", arrCalif[i].id, getName(arrAl, size, arrCalif[i].id) );
             fprintf(salida, "Materia 1: %.2f\n", arrCalif[i].mA);
             fprintf(salida, "Materia 2: %.2f\n", arrCalif[i].mB);
             fprintf(salida, "Materia 3: %.2f\n", arrCalif[i].mC);
@@ -56,6 +56,7 @@ void kardex(Grades *arrCalif, int size, int id, FILE *salida){
             return;
         }
     }
+    printf(" -- El alumno %d no se encuentra en los datos -- \n", id);
 }
 
 void fechaGrad(Alumno *arrAl, int size, int id, FILE *salida){
@@ -65,6 +66,7 @@ void fechaGrad(Alumno *arrAl, int size, int id, FILE *salida){
             return;
         }
     }
+    printf(" -- El alumno %d no se encuentra en los datos -- \n", id);
 }
 
 void numAlumT(int numAlum, FILE *salida){
@@ -156,9 +158,33 @@ void nombAlumOp(Grades *arrCalif, Alumno *arrAl, int size, char *op, float targe
 }
 
 int menuQuery(char *qry[3], int numArg){
-    if ( strcmp(*(qry + 0), "Kardex\n") && (numArg == 2) ){
+    if ( (strcmp(*(qry + 0), "Kardex") == 0 ) && (numArg == 2) ){
         return 1;
     }
+    if ( (strcmp(*(qry + 0), "Fecha_estimada_graduacion") == 0 ) && (numArg == 2) ){
+        return 2;
+    }
+    if ( (strcmp(*(qry + 0), "Numero_alumnos") == 0 ) ){
+        if (numArg == 3)
+            return 3;
+        else if ( strcmp(*(qry + 1),"*") == 0 )
+            return 4;
+        else if (numArg == 2)
+            return 5;
+    }
+    if ( (strcmp(*(qry + 0), "Nombre_alumnos") == 0 ) ){
+        if ((strcmp(*(qry + 1), "<") == 0 ) || (strcmp(*(qry + 1), ">") == 0 ) || (strcmp(*(qry + 1), "==") == 0 ) || (strcmp(*(qry + 1), "!=") == 0 ) )
+            return 6; 
+        else if (numArg == 3)
+            return 7;
+        else if ( strcmp(*(qry + 1),"*") == 0 )
+            return 8;
+        else if (numArg == 2)
+            return 9;
+    }
+
+
+    return -1;
 }
 
 int main(int argc, char *argv[])
@@ -244,11 +270,10 @@ int main(int argc, char *argv[])
                     char str[35];
                     str[0] = '\0';
                     char *qry[3];
-                    int arg = 0, bFlag = 0, iMenu;
-                    iMenu = - 1;
+                    int arg = 0, bFlag = 0;
                     getchar();
 
-                    printf(" Query >");
+                    printf("\n Query >");
                     scanf("%[^\n]", str);
                     
                     
@@ -264,7 +289,7 @@ int main(int argc, char *argv[])
                         bFlag = 1;
                     }
                     else if (qry[1] == NULL ){
-                        printf(" !!! Error: Los queries deben tener al menos un argumento. !!! ");
+                        printf(" !!! Error: Query inválido. Revisa la documentación si necesitas ayuda !!! \n");
                         bFlag = 0;
                     }
                     else if (qry[2] == NULL){
@@ -274,14 +299,57 @@ int main(int argc, char *argv[])
 
                     if (bFlag == 1) {
                         //Llamar a menu
+                        int iMenu = -1;
                         iMenu = menuQuery(qry, arg);
                         switch(iMenu){
-                            case 1:
+                            case 1: //Caso Kardex
                             {
-                                //printf("%d\n", atoi(qry[1]));
-                                kardex(arrCalif, numCalif, atoi(qry[1]), outF); 
+                                kardex(arrCalif, arrAl, numCalif, atoi(qry[1]), outF); 
                                 break;
                             }
+                            case 2: //Caso fecha de Graduacion
+                            {
+                                fechaGrad(arrAl, numAlum, atoi(qry[1]), outF);
+                                break;
+                            }
+                            case 3: //Numero de alumnos. Filtro: Carrera y ciudad
+                            {
+                                numAlum2(arrAl, numAlum, qry[1], qry[2], outF);
+                                break;
+                            }
+                            case 4: //Numero de alumnos en total.
+                            {
+                                numAlumT(numAlum, outF);
+                                break;
+                            }
+                            case 5:  //Numero de alumnos. Filtro: Carrera 
+                            {
+                                numAlum1(arrAl, numAlum, qry[1], outF);
+                                break;
+                            }
+                            case 6: //Nombre de alumnos con operador
+                            {
+                                nombAlumOp(arrCalif, arrAl, numAlum, qry[1], atof(qry[2]), outF);
+                                break;
+                            }
+                            case 7: //Nombre de alumno.  Filtro: Carrera y ciudad
+                            {
+                                nombAlum2(arrAl, numAlum, qry[1], qry[2], outF);
+                                break; 
+                            }
+                            case 8: //Nombre de todos los alumnos
+                            {
+                                nombAlumT(arrAl, numAlum, outF);
+                                break;
+                            }
+                            case 9: //Nombre de los alumnos. Filtro: Carrera
+                            {
+                                nombAlum1(arrAl, numAlum, qry[1], outF);
+                                break;
+                            }
+
+                            default:
+                                printf(" !!! Error: Query inválido. Revisa la documentación si necesitas ayuda !!! \n");
                         }
                     }
 
