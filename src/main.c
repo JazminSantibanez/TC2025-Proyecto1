@@ -42,6 +42,7 @@ int getIndexCalif(Grades *arrCalif, int size, int id)
     return -1;
 }
 
+
 /* Queries para pasar a biblioteca */
 void kardex(Grades *arrCalif, int size, int id, FILE *salida){
     for (int i = 0; i < size; i++){
@@ -154,6 +155,12 @@ void nombAlumOp(Grades *arrCalif, Alumno *arrAl, int size, char *op, float targe
     }
 }
 
+int menuQuery(char *qry[3], int numArg){
+    if ( strcmp(*(qry + 0), "Kardex\n") && (numArg == 2) ){
+        return 1;
+    }
+}
+
 int main(int argc, char *argv[])
 {
     FILE *archAlumnos, *archCalif;
@@ -211,8 +218,7 @@ int main(int argc, char *argv[])
     
     /* Logica principal del programa */
     FILE *outF;
-    char qry[3];
-    int iOpc = 1; 
+    int iOpc;
     do {
         iOpc = -1;
         printf("\n ---- Menu ---- \n");
@@ -220,9 +226,8 @@ int main(int argc, char *argv[])
         printf("Que opción le gustaria ejecutar?: ");
         scanf("%d", &iOpc);
 
-        switch (iOpc)
-        {
-        case 1:
+        switch (iOpc){
+        case 1:{
             printf("  ID \t  Nombre \tCarrera \t Ciudad \t Graduacion \t Calificaciones\n");
             for (int i = 0; i < numAlum; i++){
                 printf(" %d) %d  -  %s\t%s   %s     \t%s", i+1, arrAl[i].id, arrAl[i].sName, arrAl[i].sCarrera, arrAl[i].sCiudad, arrAl[i].sFecha);
@@ -230,44 +235,69 @@ int main(int argc, char *argv[])
                 printf("\t Notas: - %.1f %.1f %.1f %.1f\n", arrCalif[ind].mA, arrCalif[ind].mB, arrCalif[ind].mC, arrCalif[ind].mD);
             }
             break;
+        }
         
-        case 2:
-            {
+        case 2:{
             printf(" ** Da enter sin escribir nada para salir **\n");
-               while (1)
-                {
+               while (1){
                     char str[35];
                     str[0] = '\0';
                     char *qry[3];
-                    int arg = 0;
+                    int arg = 0, bFlag = 0, iMenu;
+                    iMenu = - 1;
                     getchar();
 
-                    printf(" Query > ");
+                    printf(" Query >");
                     scanf("%[^\n]", str);
                     
                     
-                    qry[0] = strtok(str, " ");
-                    qry[1] = strtok(NULL, " ");
-                    qry[2] = strtok(NULL, " ");
-                    
-                    if (qry[0] == NULL)
-                    {
-                        printf("Nada\n");
+                    qry[0] = strtok(str, " \n");
+                    qry[1] = strtok(NULL, " \n");
+                    qry[2] = strtok(NULL, " \n");
+
+                    if (qry[0] == NULL){
                         break;
                     }
+                    else if ( qry[2] != NULL){
+                        arg = 3;
+                        bFlag = 1;
+                    }
+                    else if (qry[1] == NULL ){
+                        printf(" !!! Error: Los queries deben tener al menos un argumento. !!! ");
+                        bFlag = 0;
+                    }
+                    else if (qry[2] == NULL){
+                        arg = 2;
+                        bFlag = 1;
+                    }
 
-                    //printf("%s-%s-%s\n", qry[0], qry[1], qry[2]);
+                    if (bFlag == 1) {
+                        //Llamar a menu
+                        iMenu = menuQuery(qry, arg);
+                        switch(iMenu){
+                            case 1:
+                            {
+                                /* printf("%d\n", atoi(qry[1]));
+                                kardex(arrCalif, numCalif, 10290, outF); */
+                                int idUs = 0;
+                                scanf("%d", &idUs);
+                                kardex(arrCalif, numCalif, idUs, outF);
+                                break;
+                            }
+                        }
+                    }
+
                 }
                 break;
             }
         
         case 0:
-
             break;
         
-        default:
-            printf(" !!! Opcioón no reconocida. Ingresa uno de los numeros del menu !!!\n");
+        default:{
+            printf(" !!! Error: Opción no reconocida. Ingresa uno de los numeros del menu !!!\n");
             break;
+        }
         }
     } while (iOpc != -0);
 
@@ -275,29 +305,6 @@ int main(int argc, char *argv[])
     
     outF = stdout;
     
-    /*
-    int idUs = 0;
-    scanf("%d", &idUs);
-    kardex(arrCalif, numCalif, idUs, outF);
-    fechaGrad(arrAl, numAlum, idUs, outF); 
-    
-    char str[4], str2[25];
-    nombAlumT(arrAl, numAlum, outF);
-    printf("Carrera: ");
-    scanf("%s", str);
-    nombAlum1(arrAl, numAlum, str, outF);
-    printf("Ciudad: ");
-    scanf("%s", str2);
-    nombAlum2(arrAl, numAlum, str, str2, outF);
-    
-    char str[4];
-    float prom = 0.0;
-    printf("Operador: ");
-    scanf("%s", str);
-    printf("Promedio: ");
-    scanf("%f", &prom);
-    nombAlumOp(arrCalif, arrAl, numAlum, str, prom, outF);
-    */
 
     /* Liberar memoria dinamica */
     free(arrAl);
